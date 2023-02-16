@@ -1,19 +1,39 @@
 {
-  "name": "kickstart",
-  "version": "1.0.0",
-  "description": "",
-  "main": "index.js",
-  "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1"
-  },
-  "author": "",
-  "license": "ISC",
-  "dependencies": {
-    "@truffle/hdwallet-provider": "^1.5.1",
-    "fs-extra": "^10.0.0",
-    "ganache-cli": "^6.12.2",
-    "mocha": "^9.1.2",
-    "solc": "^0.4.17",
-    "web3": "^1.6.0"
-  }
+    "name": "campaign-funding-app",
+    "version": "0.0.1",
+    "description": "POC for generating fundraising campaigns funded with Ethereum",
+    "main": "index.js",
+    "scripts": {
+        "test": "echo \"Error: no test specified\" && exit 1",
+        "lint": "solhint 'etherem/contracts/*.sol'",
+        "lint:fix": "solhint 'ethereumcontracts/*.sol' --fix",
+        "format": "prettier --write ."
+    },
+    "author": "Mills McIlroy",
+    "license": "MIT",
+    "dependencies": {
+        "@truffle/hdwallet-provider": "1.5.1",
+        "fs-extra": "10.1.0",
+        "ganache-cli": "6.12.2",
+        "mocha": "^9.1.2",
+        "solc": "0.4.17",
+        "web3": "1.6.0"
+    },
+    "devDependencies": {
+        "lint-staged": "^13.1.2",
+        "pre-commit": "^1.2.2",
+        "prettier": "2.8.4",
+        "prettier-plugin-solidity": "^1.0.0-beta.24",
+        "solhint": "^3.3.7",
+        "solhint-plugin-prettier": "^0.0.5"
+    },
+    "lint-staged": {
+        "*.{js,json,yml}": [
+            "prettier --write"
+        ],
+        "*.sol": [
+            "prettier --write",
+            "solhint"
+        ]
+    }
 }
