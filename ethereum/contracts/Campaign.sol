@@ -30,7 +30,7 @@ contract Campaign {
     uint public approversCount;
 
     modifier restricted() {
-        require(msg.sender == manager);
+        require(msg.sender == manager, "Not Authorized");
         _;
     }
 
@@ -40,7 +40,10 @@ contract Campaign {
     }
 
     function contribute() public payable {
-        require(msg.value > minimumContribution);
+        require(
+            msg.value >= minimumContribution,
+            "minimumContribution not met"
+        );
 
         approvers[msg.sender] = true;
         approversCount++;
@@ -65,8 +68,8 @@ contract Campaign {
     function approveRequest(uint index) public {
         Request storage request = requests[index];
 
-        require(approvers[msg.sender]);
-        require(!request.approvals[msg.sender]);
+        require(approvers[msg.sender], "Sender is not an approver");
+        require(!request.approvals[msg.sender], "Request already approved");
 
         request.approvals[msg.sender] = true;
         request.approvalCount++;
@@ -75,8 +78,11 @@ contract Campaign {
     function finalizeRequest(uint index) public restricted {
         Request storage request = requests[index];
 
-        require(request.approvalCount > (approversCount / 2));
-        require(!request.complete);
+        require(
+            request.approvalCount > (approversCount / 2),
+            "Request not approved"
+        );
+        require(!request.complete, "Request already completed");
 
         request.recipient.transfer(request.value);
         request.complete = true;
