@@ -4,6 +4,7 @@
     "description": "POC for generating fundraising campaigns funded with Ethereum",
     "main": "index.js",
     "scripts": {
+        "dev": "next dev",
         "test": "mocha",
         "lint": "solhint 'ethereum/contracts/*.sol'",
         "lint:fix": "solhint 'ethereum/contracts/*.sol' --fix",
@@ -17,7 +18,11 @@
         "fs-extra": "10.0.0",
         "ganache-cli": "6.12.2",
         "mocha": "9.1.2",
+        "next": "^12.3.4",
+        "react": "^18.2.0",
+        "react-dom": "^18.2.0",
         "solc": "0.4.17",
+        "turbo": "^1.8.1",
         "web3": "1.6.0"
     },
     "devDependencies": {
