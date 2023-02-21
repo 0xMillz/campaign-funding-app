@@ -1,18 +1,24 @@
-pragma solidity 0.4.17;
+// SPDX-License-Identifier: MIT
+pragma solidity 0.8.9;
 
 contract CampaignFactory {
-    address[] public deployedCampaigns;
+    address payable[] public deployedCampaigns;
 
     function createCampaign(uint minimum) public {
-        address newCampaign = new Campaign(minimum, msg.sender);
-        deployedCampaigns.push(newCampaign);
+        address newCampaign = address(new Campaign(minimum, msg.sender));
+        deployedCampaigns.push(payable(newCampaign));
     }
 
-    function getDeployedCampaigns() public view returns (address[]) {
+    function getDeployedCampaigns()
+        public
+        view
+        returns (address payable[] memory)
+    {
         return deployedCampaigns;
     }
 }
 
+// first campaign address: 0x378a767Ec5e9e10909F49b58F985D7e2C0fC1CE7
 contract Campaign {
     struct Request {
         string description;
@@ -34,7 +40,7 @@ contract Campaign {
         _;
     }
 
-    function Campaign(uint minimum, address creator) public {
+    constructor(uint minimum, address creator) public {
         manager = creator;
         minimumContribution = minimum;
     }
@@ -50,19 +56,16 @@ contract Campaign {
     }
 
     function createRequest(
-        string description,
+        string memory description,
         uint value,
         address recipient
     ) public restricted {
-        Request memory newRequest = Request({
-            description: description,
-            value: value,
-            recipient: recipient,
-            complete: false,
-            approvalCount: 0
-        });
-
-        requests.push(newRequest);
+        Request storage newRequest = requests.push();
+        newRequest.description = description;
+        newRequest.value = value;
+        newRequest.recipient = recipient;
+        newRequest.complete = false;
+        newRequest.approvalCount = 0;
     }
 
     function approveRequest(uint index) public {
@@ -82,9 +85,27 @@ contract Campaign {
             request.approvalCount > (approversCount / 2),
             "Request not approved"
         );
-        require(!request.complete, "Request already completed");
+        require(!request.complete, "Request already finalized");
 
         request.recipient.transfer(request.value);
         request.complete = true;
+    }
+
+    function getSummary()
+        public
+        view
+        returns (uint, uint, uint, uint, address)
+    {
+        return (
+            minimumContribution,
+            address(this).balance,
+            requests.length,
+            approversCount,
+            manager
+        );
+    }
+
+    function getRequestsCount() public view returns (uint) {
+        return requests.length;
     }
 }
