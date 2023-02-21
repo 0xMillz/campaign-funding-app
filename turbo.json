@@ -1,13 +1,28 @@
 {
     "$schema": "https://turbo.build/schema.json",
+    "globalDependencies": [".env.local"],
     "pipeline": {
         "build": {
             "outputs": [".next/**"]
         },
+        "compile:contracts": {},
         "dev": {
+            "dependsOn": ["compile:contracts"],
             "cache": false,
             "persistent": true
         },
-        "lint": {}
+        "test": {
+            "dependsOn": ["compile:contracts"],
+            "inputs": ["ethereum/build/*.sol", "test/*.js"]
+        },
+        "lint:contracts": {},
+        "lint:contracts:fix": {},
+        "format": {},
+        "clean": {
+            "cache": false
+        },
+        "deploy:factory": {
+            "dependsOn": ["compile:contracts", "test", "lint:contracts"]
+        }
     }
 }
