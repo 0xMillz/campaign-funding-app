@@ -1,5 +1,5 @@
 node_modules
 .idea/
-ethereum/build
-ethereum/.env
+.env.local
 .turbo
+.next/**
