@@ -87,7 +87,7 @@ contract Campaign {
         );
         require(!request.complete, "Request already finalized");
 
-        request.recipient.transfer(request.value);
+        payable(request.recipient).transfer(request.value);
         request.complete = true;
     }
 
